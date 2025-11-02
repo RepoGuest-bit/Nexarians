@@ -188,16 +188,23 @@ plt.show()
 | **Memory** | Sparse-friendly (`csr_matrix`, `csc_matrix`) |
 | **Scalability** | Extend to mini-batch for > 100 k rows |
 
-## Comparison with scikit-learn
+## Comparison with scikit-learn `LogisticRegression`
 
-| Feature | GSBC | scikit-learn |
-|---------|------|--------------|
-| Regularization | L1/L2/ElasticNet/None | Yes |
-| Loss options | Cross-Entropy | Cross-Entropy |
-| Solver | Gradient descent | LBFGS, SAG, etc. |
-| Early stopping | Yes | Limited |
-| Shuffling / seed | Yes | Partial |
-| Verbose levels | 0/1/2 | Basic |
+| Feature | GSBC | scikit-learn `LogisticRegression` |
+|---------|------|-----------------------------------|
+| **Regularization** | ✅ L1 / L2 / ElasticNet / None | ✅ L1 / L2 / ElasticNet / None |
+| **Loss Function** | ✅ Cross-Entropy | ✅ Cross-Entropy |
+| **Solver** | ✅ Gradient Descent | ✅ LBFGS, SAG, SAGA, Newton-CG, liblinear |
+| **Sparse Input Support** | ✅ Full (`csr`, `csc`) | ✅ Full (`csr`, `csc`) |
+| **Early Stopping** | ✅ Built-in (`tol`) | ❌ Only with `SAG/SAGA` + `warm_start` |
+| **Data Shuffling** | ✅ Per-epoch + `random_state` | ❌ Only in `SAG/SAGA` |
+| **Verbose Levels** | ✅ 0/1/2 (progress every epoch or ~5%) | ✅ Basic (via `verbose`) |
+| **Class Weighting** | ✅ Automatic balancing | ✅ Manual via `class_weight` |
+| **Learning Rate Control** | ✅ Manual `learning_rate` | ❌ Only in `SAG/SAGA` (adaptive) |
+| **Loss History** | ✅ `loss_history` attribute | ❌ Not exposed |
+| **Customizability** | ✅ Full access to GD loop | ❌ Limited (black-box solvers) |
+
+> **Note**: `LogisticRegression` is faster and more robust for large datasets due to optimized solvers. GSBC excels in **transparency**, **teaching**, and **custom gradient logic**.
 
 ## License
 
