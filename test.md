@@ -28,11 +28,10 @@ $$
 - $b$ – bias (if `fit_intercept=True`)
 
 ### Loss Functions
-| Loss | Formula |
-|------|---------|
-| **MSE** | $$\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2$$ |
-| **RMSE** | $$\sqrt{\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}$$ |
-| **MAE** \lvert $$\frac{1}{N}\sum_{i=1}^{N}|y_i - \hat{y}_i|$$ \rvert
+
+- **MSE (Mean Squared Error)**: $\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2$
+- **RMSE (Root Mean Squared Error)**: $\sqrt{\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}$
+- **MAE (Mean Absolute Error)**: $\frac{1}{N}\sum_{i=1}^{N}|y_i - \hat{y}_i|$
 
 ### Regularization
 Added to the loss to control model complexity:
