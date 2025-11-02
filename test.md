@@ -1,10 +1,10 @@
-# GSBC – Gradient Supported Basic Classifier
+# GSIC – Gradient Supported Intense Classifier
 
 ## Overview
 
-GSBC (Gradient Supported Basic Classifier) is a lightweight, custom linear classification model implemented in Python. It supports optimization via **gradient descent** with **softmax** for multi-class classification and includes regularization options such as **L1 (Lasso)**, **L2 (Ridge)**, and **ElasticNet** to prevent overfitting. The model minimizes **categorical cross-entropy** loss. It works with both dense and sparse matrices, offers early stopping, data shuffling, and multi-level verbose logging.
+GSIC (Gradient Supported Intense Classifier) is an advanced, custom linear classification model implemented in Python. It supports optimization via **mini-batch gradient descent** with **softmax** for multi-class classification and includes regularization options such as **L1 (Lasso)**, **L2 (Ridge)**, and **ElasticNet** to prevent overfitting. The model minimizes **categorical cross-entropy** loss and offers multiple optimizers (**MBGD**, **Adam**, **AdamW**) and learning rate schedulers (**constant**, **invscaling**, **plateau**). It works with both dense and sparse matrices, offers early stopping, data shuffling, and multi-level verbose logging.
 
-Perfect for teaching, quick prototyping, or when you need a simple, interpretable classifier without heavy dependencies.
+Perfect for teaching, quick prototyping, or when you need a flexible, interpretable classifier with advanced optimization without heavy dependencies.
 
 ## Installation & Requirements
 
@@ -13,7 +13,7 @@ pip install numpy scipy
 ```
 
 ```python
-from BasicModels.GSBC import BasicClassifier
+from nexgml.gradient_supported import IntenseClassifier
 ```
 
 ## Mathematical Formulation
@@ -37,7 +37,7 @@ $$
 (where $y$ is one-hot encoded, $C$ is number of classes)
 
 ### Regularization
-Added to the loss to control model complexity:
+Added to the loss to control model complexity (applied in loss or update step for AdamW):
 
 - **L1 (Lasso)**: $\alpha \sum |w_{i,j}|$
 - **L2 (Ridge)**: $\alpha \sum w_{i,j}^2$
@@ -47,40 +47,46 @@ Total loss = *base loss* + *regularization term*.
 
 ### Gradients (example for Cross-Entropy)
 $$
-\frac{\partial L}{\partial w} = \frac{1}{N}X^{T}(\hat{p} - y) + \text{regularization gradient}
+\frac{\partial L}{\partial w} = \frac{1}{N}X^{T}(\hat{p} - y) + \text{regularization gradient (applied in update)}
 $$
 $$
 \frac{\partial L}{\partial b}= \frac{1}{N}\sum (\hat{p} - y)
 $$
 
-Supports class weighting for imbalanced data.
-
 ## Key Features
 - **Regularization**: L1 / L2 / ElasticNet / None  
 - **Loss**: Categorical Cross-Entropy  
 - **Input**: dense `np.ndarray` **or** SciPy sparse matrices  
-- **Optimization**: gradient descent with learning-rate control  
+- **Optimization**: mini-batch gradient descent with MBGD / Adam / AdamW  
+- **LR Schedulers**: constant / invscaling / plateau  
 - **Early stopping** on loss convergence (`tol`)  
 - **Shuffling** + `random_state` for reproducibility  
-- **Verbose levels** (0/1/2)  
+- **Verbose levels** (0/1)  
 - **Multi-class** support via softmax  
-- **Class weighting** for imbalanced datasets  
+- **Mini-batch** processing for efficiency  
 
 ## Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `max_iter` | `int` | `1000` | Max gradient-descent steps |
-| `learning_rate` | `float` | `0.01` | Step size |
+| `max_iter` | `int` | `1000` | Max training epochs |
+| `learning_rate` | `float` | `0.01` | Initial step size |
 | `penalty` | `Literal['l1','l2','elasticnet'] \| None` | `'l2'` | Regularization type |
-| `alpha` | `float` | `0.0001` | Regularization strength |
+| `alpha` | `float` | `0.001` | Regularization strength |
 | `l1_ratio` | `float` | `0.5` | ElasticNet mix (0 = L2, 1 = L1) |
 | `fit_intercept` | `bool` | `True` | Add bias term |
 | `tol` | `float` | `0.0001` | Early-stop tolerance |
 | `shuffle` | `bool` | `True` | Shuffle data each epoch |
 | `random_state` | `int \| None` | `None` | Seed for shuffling |
 | `early_stopping` | `bool` | `True` | Enable early stop |
-| `verbose` | `int` | `0` | 0 = silent, 1 = ~5 % progress, 2 = every epoch |
+| `verbose` | `int` | `0` | 0 = silent, 1 = progress |
+| `lr_scheduler` | `Literal['constant','invscaling','plateau']` | `'invscaling'` | Learning rate scheduler |
+| `optimizer` | `Literal['mbgd','adam','adamw']` | `'mbgd'` | Optimizer type |
+| `batch_size` | `int` | `16` | Mini-batch size |
+| `power_t` | `float` | `0.5` | Exponent for invscaling |
+| `patience` | `int` | `5` | Epochs to wait for plateau |
+| `factor` | `float` | `0.5` | LR reduction factor for plateau |
+| `stoic_iter` | `int` | `10` | Warm-up epochs before early stop/scheduler |
 
 ## Model Attributes (post-fit)
 
@@ -88,20 +94,19 @@ Supports class weighting for imbalanced data.
 |-----------|------|-------------|
 | `weights` | `np.ndarray` | Learned coefficients (features × classes) |
 | `b` | `np.ndarray` | Bias vector |
-| `loss_history` | `List[float]` | Loss per iteration |
+| `loss_history` | `List[float]` | Loss per epoch |
 | `classes` | `np.ndarray` | Unique class labels |
 | `n_classes` | `int` | Number of unique classes |
 
 ## API Reference
 
-### `BasicClassifier.__init__(...)`
+### `IntenseClassifier.__init__(...)`
 Creates the model with the hyper-parameters above.
 
 ### `fit(X_train, y_train)`
-Trains via gradient descent.
+Trains via mini-batch gradient descent.
 
-- **Raises** `ValueError` for NaN/Inf or shape mismatch  
-- **Raises** `OverflowError` if weights/bias become NaN/Inf
+- **Raises** `ValueError` for NaN/Inf, shape mismatch, invalid params, or <2 classes
 
 ### `predict_proba(X_test)`
 Returns predicted class probabilities $\hat{p}$ for new samples.
@@ -115,43 +120,44 @@ Returns predicted class labels (argmax of probabilities).
 
 ## Usage Examples
 
-### 1. L2 (default)
+### 1. MBGD + invscaling (default)
 ```python
 import numpy as np
 from sklearn.datasets import make_classification
-from BasicModels.GSBC import BasicClassifier
+from BasicModels.GSIC import IntenseClassifier
 
-X, y = make_classification(n_samples=200, n_features=10, n_classes=3, n_informative=5, random_state=42)
+X, y = make_classification(n_samples=500, n_features=20, n_classes=4, n_informative=10, random_state=42)
 
-model = BasicClassifier(max_iter=1500, learning_rate=0.02,
-                        penalty='l2', alpha=0.05, verbose=1)
+model = IntenseClassifier(max_iter=1500, learning_rate=0.02,
+                          penalty='l2', alpha=0.05, batch_size=32, verbose=1)
 model.fit(X, y)
 
 print(f"Loss: {model.loss_history[-1]:.6f}")
 print(f"Weights (mean): {model.weights.mean():.6f}, bias (mean): {np.mean(model.b):.6f}")
 ```
 
-### 2. ElasticNet + scaling
+### 2. Adam + plateau + scaling
 ```python
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
 X_sc = scaler.fit_transform(X)
 
-model = BasicClassifier(penalty='elasticnet', alpha=0.01, l1_ratio=0.7,
-                        max_iter=3000, learning_rate=0.005,
-                        shuffle=True, random_state=123, verbose=2)
+model = IntenseClassifier(optimizer='adam', lr_scheduler='plateau', penalty='elasticnet', alpha=0.01, l1_ratio=0.7,
+                          max_iter=3000, learning_rate=0.005, batch_size=64, patience=10, factor=0.1,
+                          shuffle=True, random_state=123, verbose=1)
 model.fit(X_sc, y)
 ```
 
-### 3. Sparse data (no regularisation)
+### 3. AdamW + L2 + sparse data
 ```python
 from scipy.sparse import csr_matrix
 
-X_sp = csr_matrix(np.random.randn(500, 200))
-y_sp = np.random.randint(0, 3, 500)  # 3 classes
+X_sp = csr_matrix(np.random.randn(1000, 500))
+y_sp = np.random.randint(0, 5, 1000)  # 5 classes
 
-model = BasicClassifier(penalty=None, max_iter=800, learning_rate=0.03)
+model = IntenseClassifier(optimizer='adamw', penalty='l2', alpha=0.001, max_iter=800, learning_rate=0.03,
+                          batch_size=128, lr_scheduler='constant', stoic_iter=20)
 model.fit(X_sp, y_sp)
 ```
 
@@ -159,15 +165,16 @@ model.fit(X_sp, y_sp)
 
 1. **Scale features** (`StandardScaler`) → faster convergence.  
 2. Start with `learning_rate ∈ [0.001, 0.1]`; monitor `loss_history`.  
-3. Use `early_stopping=True` + `tol=1e-4`.  
-4. For high-dimensional data, keep `penalty='l1'` or `'elasticnet'`.  
-5. Plot loss curve:
+3. Use `early_stopping=True` + `tol=1e-4` and tune `stoic_iter` for warm-up.  
+4. For high-dimensional data, use `penalty='l1'` or `'elasticnet'`.  
+5. Choose `optimizer='adam'` or `'adamw'` for better convergence on complex data; tune `batch_size` based on memory.  
+6. Plot loss curve:
 
 ```python
 import matplotlib.pyplot as plt
 plt.plot(model.loss_history)
 plt.title('Training Loss')
-plt.xlabel('Iteration')
+plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.grid(True)
 plt.show()
@@ -177,34 +184,35 @@ plt.show()
 
 - **NaN/Inf** in `X` or `y` → `ValueError`  
 - **Shape mismatch** → `ValueError`  
-- **Numerical overflow** during training → `OverflowError` (stops early)  
-- **Fewer than 2 classes** → `ValueError`
+- **Fewer than 2 classes** → `ValueError`  
+- **Invalid params** (e.g., AdamW with non-L2) → `ValueError`
 
 ## Performance Notes
 
-| Aspect | GSBC |
+| Aspect | GSIC |
 |--------|------|
-| **Speed** | Batch GD – good for ≤ 10 k samples |
+| **Speed** | Mini-batch GD – good for 10k+ samples |
 | **Memory** | Sparse-friendly (`csr_matrix`, `csc_matrix`) |
-| **Scalability** | Extend to mini-batch for > 100 k rows |
+| **Scalability** | Mini-batch + advanced optimizers for large datasets |
 
 ## Comparison with scikit-learn `LogisticRegression`
 
-| Feature | GSBC | scikit-learn `LogisticRegression` |
+| Feature | GSIC | scikit-learn `LogisticRegression` |
 |---------|------|-----------------------------------|
 | **Regularization** | ✅ L1 / L2 / ElasticNet / None | ✅ L1 / L2 / ElasticNet / None |
 | **Loss Function** | ✅ Cross-Entropy | ✅ Cross-Entropy |
-| **Solver** | ✅ Gradient Descent | ✅ LBFGS, SAG, SAGA, Newton-CG, liblinear |
+| **Solver** | ✅ MBGD / Adam / AdamW | ✅ LBFGS, SAG, SAGA, Newton-CG, liblinear |
 | **Sparse Input Support** | ✅ Full (`csr`, `csc`) | ✅ Full (`csr`, `csc`) |
-| **Early Stopping** | ✅ Built-in (`tol`) | ❌ Only with `SAG/SAGA` + `warm_start` |
+| **Early Stopping** | ✅ Built-in (`tol`, `stoic_iter`) | ❌ Only with `SAG/SAGA` + `warm_start` |
 | **Data Shuffling** | ✅ Per-epoch + `random_state` | ❌ Only in `SAG/SAGA` |
-| **Verbose Levels** | ✅ 0/1/2 (progress every epoch or ~5%) | ✅ Basic (via `verbose`) |
-| **Class Weighting** | ✅ Automatic balancing | ✅ Manual via `class_weight` |
-| **Learning Rate Control** | ✅ Manual `learning_rate` | ❌ Only in `SAG/SAGA` (adaptive) |
+| **Verbose Levels** | ✅ 0/1 (progress) | ✅ Basic (via `verbose`) |
+| **Class Weighting** | ❌ Not built-in | ✅ Manual via `class_weight` |
+| **Learning Rate Control** | ✅ Initial + schedulers (constant/invscaling/plateau) | ❌ Only adaptive in `SAG/SAGA` |
 | **Loss History** | ✅ `loss_history` attribute | ❌ Not exposed |
-| **Customizability** | ✅ Full access to GD loop | ❌ Limited (black-box solvers) |
+| **Customizability** | ✅ Full access to mini-batch/optimizer loop | ❌ Limited (black-box solvers) |
+| **Mini-Batch Support** | ✅ Built-in (`batch_size`) | ✅ Partial (in `SAG/SAGA`) |
 
-> **Note**: `LogisticRegression` is faster and more robust for large datasets due to optimized solvers. GSBC excels in **transparency**, **teaching**, and **custom gradient logic**.
+> **Note**: `LogisticRegression` is faster and more robust for large datasets due to optimized solvers. GSIC excels in **flexibility**, **advanced optimizers**, **teaching**, and **custom gradient logic**.
 
 ## License
 
