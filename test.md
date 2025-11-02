@@ -30,9 +30,9 @@ $$
 ### Loss Functions
 | Loss | Formula |
 |------|---------|
-| **MSE** | $$\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2$$ |
-| **RMSE** | $$\sqrt{\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}$$ |
-| **MAE** | $$\frac{1}{N}\sum_{i=1}^{N}|y_i - \hat{y}_i|$$ |
+| **MSE** | $\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2$ |
+| **RMSE** | $\sqrt{\frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}$ |
+| **MAE** | $\frac{1}{N}\sum_{i=1}^{N}|y_i - \hat{y}_i|$ |
 
 ### Regularization
 Added to the loss to control model complexity:
