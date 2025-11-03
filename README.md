@@ -1,4 +1,60 @@
-# Nexarians
+# Nexarians - The NexGML Core Repository
+
+[![PyPI version](https://badge.fury.io/py/nexgml.svg)](https://pypi.org/project/nexgml/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Next-Aura/Nexarians/blob/main/LICENSE) 
+
+## Installation
+```bash
+pip install nexgml
+```
+
+## 🔬 Core Philosophy: Transparent, Fast, and Modular
+
+NexGML is a custom Machine Learning utility built for educational and research purposes, emphasizing **code transparency** and **high performance**.
+
+### Key Features & Technology Stack
+
+  * **JIT Acceleration:** Core math operations (`nexgml.helper.amo` and `nexgml.helper.indexing`) are optimized using **Numba** for near C-speed performance.
+  * **Advanced Optimization:** Includes modern solvers like **Adam** and **AdamW** in classifiers.
+  * **Modular Helpers:** Separates complex logic into focused helper modules (`AMO`, `ForTree`, `Indexing`) for easy customization.
+  * **Sparse Data Ready:** Full support for `scipy.sparse` matrices (CSR/CSC) for memory efficiency.
+
+-----
+
+## 💻 Available Modules & Quick Start
+
+### 1\. Classifiers (The Models)
+
+The primary model is the **Gradient Supported Intense Classifier (GSIC)**.
+
+```python
+from nexgml.models import IntenseClassifier
+import numpy as np
+
+# Load data X, y...
+
+model = IntenseClassifier(
+    optimizer='adamw', 
+    lr_scheduler='plateau', 
+    batch_size=32, 
+    penalty='elasticnet'
+)
+model.fit(X_train, y_train)
+
+print(f"Final Training Loss: {model.loss_history[-1]:.6f}")
+```
+
+### 2\. Helper Modules (Performance Backbone)
+
+These modules contain the high-speed math used internally.
+
+| Module | Purpose | Example Usage |
+| :--- | :--- | :--- |
+| `nexgml.helper.amo` | **Advanced Math Operations.** Activation/Loss functions (Softmax, CCE, RMSE). | `AMO.softmax(logits)` |
+| `nexgml.helper.amo.ForTree` | **Tree Criteria.** Impurity measures (Gini, Entropy, Friedman MSE). | `ForTree.gini_impurity(labels)` |
+| `nexgml.helper.Indexing` | **Data Utilities.** One-hot encoding, smart feature slicing (`standard_indexing`). | `Indexing.standard_indexing(n_features, 'sqrt')` |
+
+## 📝 Documentation & Exploration
 
 This repository is dedicated to experimentation, learning, and personal research, primarily in the following fields:
 
