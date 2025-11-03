@@ -28,7 +28,7 @@ NexGML is a custom Machine Learning utility built for educational and research p
 The primary model is the **Gradient Supported Intense Classifier (GSIC)**.
 
 ```python
-from nexgml.models import IntenseClassifier
+from nexgml.gradient_supported import IntenseClassifier
 import numpy as np
 
 # Load data X, y...
