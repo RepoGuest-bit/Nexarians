@@ -3,7 +3,7 @@
 A collection of educational ML implementations focusing on gradient-based methods,
 tree models, and utility helpers.
 """
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .helper.amo import AMO, ForTree
 from .helper.indexing import Indexing
