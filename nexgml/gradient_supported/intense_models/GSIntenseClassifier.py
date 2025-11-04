@@ -2,8 +2,8 @@
 import numpy as np                           # For numerical operations
 from scipy.sparse import issparse, spmatrix  # For sparse matrix support
 from typing import Literal, Optional         # More specific type hints
-from ...helper import AMO                    # For some math operation
-from ...helper import Indexing               # For one-hot labeling
+from nexgml.helper.amo import AMO            # For some math operation
+from nexgml.helper.indexing import Indexing  # For one-hot labeling
 
 # ========== THE MODEL ==========
 class IntenseClassifier:

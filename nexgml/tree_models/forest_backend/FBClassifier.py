@@ -2,8 +2,8 @@
 import numpy as np                                # Numpy for numerical computations
 from typing import Optional, Literal              # More specific type hints
 from scipy.sparse import spmatrix, issparse       # For sparse matrix handling
-from .. import TreeBackendClassifier              # Estimator model
-from ...helper.indexing import Indexing           # For indexing utilities
+from nexgml.tree_models.tree_backend.TBClassifier import TreeBackendClassifier  # Estimator model
+from nexgml.helper.indexing import Indexing       # For indexing utilities
 
 # ========== THE MODEL ==========
 class ForestBackendClassifier:

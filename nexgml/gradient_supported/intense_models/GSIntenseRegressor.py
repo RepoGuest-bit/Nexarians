@@ -2,7 +2,7 @@
 import numpy as np                           # For numerical computations 
 from scipy.sparse import spmatrix, issparse  # For sparse matrix handling
 from typing import Literal, Optional         # More specific type hints
-from ...helper import AMO                    # For some math operations
+from nexgml.helper.amo import AMO            # For some math operations
 
 # ========== THE MODEL ==========
 class IntenseRegressor:

@@ -2,8 +2,8 @@
 import numpy as np                               # Numpy for numerical computations
 from typing import Optional, Literal             # More specific type hints
 from scipy.sparse import spmatrix, issparse      # For sparse matrix handling
-from .. import TreeBackendRegressor              # Estimator model
-from ...helper.indexing import Indexing          # For indexing utilities
+from nexgml.tree_models.tree_backend.TBRegressor import TreeBackendRegressor  # Estimator model
+from nexgml.helper.indexing import Indexing      # For indexing utilities
 
 # ========== THE MODEL ==========
 class ForestBackendRegressor:

@@ -2,8 +2,8 @@
 import numpy as np                           # Numpy for numerical computations
 from scipy.sparse import issparse, spmatrix  # For sparse matrix handling
 from typing import Literal, Optional         # More specific type hints
-from ...helper import AMO                    # For some math operation
-from ...helper import Indexing               # For indexing utilities
+from nexgml.helper.amo import AMO            # For some math operation
+from nexgml.helper.indexing import Indexing  # For indexing utilities
 
 # ========== THE MODEL ==========
 class BasicClassifier:
