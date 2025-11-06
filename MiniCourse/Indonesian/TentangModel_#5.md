@@ -2,19 +2,19 @@
 
 ## Pelajaran 5: Mengenal Berbagai Model Pembelajaran Mesin
 
-Halo, selamat datang di Pelajaran 5! Kamu sudah berhasil bikin dan menilai model pertama pakai regresi linear, keren! Tapi, regresi linear cuma salah satu alat di kotak peralatan kita. Di pelajaran ini, kita bakal jalan-jalan lihat model lain yang populer, ngerti kapan pakainya, dan bandingin performanya. Kita tetap pakai contoh harga rumah biar gampang dipahami. Yuk, kita mulai petualangan nambah skill modeling!
+Halo, selamat datang di Pelajaran 5! Kamu sudah berhasil bikin dan menilai model pertama pakai LinearRegression, keren! Tapi, LinearRegression cuma salah satu alat di kotak peralatan kita. Di pelajaran ini, kita bakal jalan-jalan lihat model lain yang populer, ngerti kapan pakainya, dan bandingin performanya. Kita tetap pakai contoh harga rumah biar gampang dipahami. Yuk, kita mulai petualangan nambah skill modeling!
 
 ---
 
 ### Kenapa Harus Coba Model Lain?
 
-Bayangin kamu cuma punya satu pisau di dapur. Bisa sih masak, tapi motong sayur, ngupas buah, atau ngocok telur bakal lebih gampang kalau pakai alat yang pas. Nah, sama halnya dengan pembelajaran mesin. Regresi linear cocok buat hubungan data yang lurus, tapi dunia nyata seringkali lebih rumit—ada kurva, kategori, atau pola yang nggak lurus. Pilih model yang tepat, prediksi kamu bakal lebih jitu dan AI kamu makin canggih. Kita cek beberapa model keren dan kapan pakainya!
+Bayangin kamu cuma punya satu pisau di dapur. Bisa sih masak, tapi motong sayur, ngupas buah, atau ngocok telur bakal lebih gampang kalau pakai alat yang pas. Nah, sama halnya dengan pembelajaran mesin. LinearRegression cocok buat hubungan data yang lurus, tapi dunia nyata seringkali lebih rumit—ada kurva, kategori, atau pola yang nggak lurus. Pilih model yang tepat, prediksi kamu bakal lebih jitu dan AI kamu makin canggih. Kita cek beberapa model keren dan kapan pakainya!
 
 ---
 
 ### Mengenal Beberapa Model Pembelajaran Mesin
 
-Berikut beberapa model populer selain regresi linear, dijelasin pake bahasa sederhana plus analogi biar gampang kebayang.
+Berikut beberapa model populer selain LinearRegression, dijelasin pake bahasa sederhana plus analogi biar gampang kebayang.
 
 1. **Decision Tree**  
    - **Apa itu?** Model yang bikin keputusan dengan nanya ya/tidak, kayak flowchart.  
@@ -48,7 +48,7 @@ Berikut beberapa model populer selain regresi linear, dijelasin pake bahasa sede
 
 ### Praktik Langsung: Nyobain Model Berbeda untuk Harga Rumah
 
-Kita bakal bandingin regresi linear, pohon keputusan, dan hutan acak pake data harga rumah. Kita pakai scikit-learn biar gampang.
+Kita bakal bandingin LinearRegression, DecisionTree, dan RandomForest pake data harga rumah. Kita pakai scikit-learn biar gampang.
 
 #### 1. Siapin Library dan Data
 
@@ -123,7 +123,7 @@ Jalankan kode di atas dan lihat nilai MAE dan R². Model mana yang paling oke? B
 
 ### Tips Pilih Model yang Pas
 
-- **Mulai Simpel:** Pakai regresi linear buat nyobain dasarnya.  
+- **Mulai Simpel:** Pakai LinearRegression buat nyobain dasarnya.  
 - **Mau Akurat?** Coba hutan acak atau SVM buat data yang agak ribet.  
 - **Butuh Cepat?** KNN atau pohon keputusan cocok buat data kecil.  
 - **Pro Tip:** Jangan takut eksperimen dan bandingin hasilnya—nggak ada model yang cocok buat semua masalah!

@@ -41,7 +41,7 @@ Bayangin kamu mau bikin salad buah. Kalau buahnya kotor atau udah busuk, saladny
 Sekarang, kita coba bikin model pake contoh harga rumah. Ini langkah-langkahnya:
 
 1. **Pilih Model**
-   - **Apa itu?** Pilih cara buat komputer belajar dari data (misalnya, “regresi linear” buat nebak harga).
+   - **Apa itu?** Pilih cara buat komputer belajar dari data (misalnya, “LinearRegression” buat nebak harga).
    - **Analogi:** Kayak pilih resep yang pas buat masakanmu.
 
 2. **Latih Model**
