@@ -87,4 +87,4 @@ Misal kamu punya tabel kayak gini:
 
 ### Apa Selanjutnya?
 
-Di pelajaran berikutnya, kita bakal kenalan sama alat coding sederhana buat pembelajaran mesin dan coba bikin model pertamamu pake kode beneran. Tetap semangat dan terus eksplor!
+Di pelajaran berikutnya, kita bakal kenalan sama alat coding sederhana buat machine learning dan coba bikin model pertamamu pake kode beneran. Tetap semangat dan terus eksplor!
